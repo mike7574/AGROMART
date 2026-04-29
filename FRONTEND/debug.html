@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgroMart Debug Panel</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    .section {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f9f9f9;
+      border-left: 4px solid #3a7d44;
+      border-radius: 4px;
+    }
+    .status { 
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin: 5px 5px 5px 0;
+    }
+    .status.ok { background: #d4edda; color: #155724; }
+    .status.error { background: #f8d7da; color: #721c24; }
+    .status.warning { background: #fff3cd; color: #856404; }
+    button {
+      padding: 8px 15px;
+      margin: 5px;
+      background: #3a7d44;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover { background: #2d5f33; }
+    .log {
+      background: #1e1e1e;
+      color: #0f0;
+      padding: 15px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .data-table th, .data-table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    .data-table th { background: #3a7d44; color: white; }
+    .data-table tr:nth-child(even) { background: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌾 AgroMart Debug Panel</h1>
+
+    <div class="section">
+      <h2>Backend Status</h2>
+      <div id="backendStatus"></div>
+      <button onclick="testBackend()">Test Backend Connection</button>
+      <button onclick="testAPI()">Fetch API Data</button>
+    </div>
+
+    <div class="section">
+      <h2>Storage Status</h2>
+      <div id="storageStatus"></div>
+      <button onclick="showStorage()">Show LocalStorage</button>
+      <button onclick="clearStorage()">Clear LocalStorage</button>
+    </div>
+
+    <div class="section">
+      <h2>Console Log</h2>
+      <div class="log" id="console"></div>
+      <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <div class="section">
+      <h2>Products from Backend</h2>
+      <table class="data-table" id="productsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Stock</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Products in LocalStorage</h2>
+      <table class="data-table" id="storageProductsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>In Stock</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="module">
+    import { productsAPI, checkBackendHealth } from './js/shared/api.js';
+    import { getStore } from './js/shared/store.js';
+    import { initBackendIntegration } from './js/shared/backend-init.js';
+
+    // Override console for logging
+    const logs = [];
+    const originalLog = console.log;
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      logs.push(args.join(' '));
+      updateLog();
+    };
+
+    function updateLog() {
+      const logEl = document.getElementById('console');
+      logEl.textContent = logs.slice(-50).join('\n');
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function clearLog() {
+      logs.length = 0;
+      updateLog();
+    }
+
+    window.testBackend = async function() {
+      console.log('Testing backend connection...');
+      try {
+        const health = await checkBackendHealth();
+        console.log('Backend health:', health);
+        updateStatus();
+      } catch (e) {
+        console.error('Backend error:', e.message);
+      }
+    };
+
+    window.testAPI = async function() {
+      console.log('Fetching products from API...');
+      try {
+        const products = await productsAPI.getAll();
+        console.log(`Got ${products.length} products`);
+        populateProductsTable(products);
+      } catch (e) {
+        console.error('API error:', e.message);
+      }
+    };
+
+    window.showStorage = function() {
+      const store = getStore();
+      console.log('Store products:', store.products.length);
+      console.log('Store data:', JSON.stringify(store, null, 2));
+      populateStorageProductsTable(store.products);
+    };
+
+    window.clearStorage = function() {
+      if (confirm('Clear all localStorage data?')) {
+        localStorage.clear();
+        console.log('LocalStorage cleared');
+        showStorage();
+      }
+    };
+
+    function updateStatus() {
+      const statusEl = document.getElementById('backendStatus');
+      const now = new Date().toLocaleTimeString();
+      statusEl.innerHTML = `
+        <p>Last check: ${now}</p>
+        <button onclick="testBackend()">Refresh</button>
+      `;
+    }
+
+    function populateProductsTable(products) {
+      const tbody = document.querySelector('#productsTable tbody');
+      tbody.innerHTML = products.slice(0, 10).map(p => `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.name}</td>
+          <td>KSh ${p.current_price || p.currentPrice}</td>
+          <td>${p.category_name || p.category}</td>
+          <td>${p.stock}</td>
+        </tr>
+      `).join('');
+    }
+
+    function populateStorageProductsTable(products) {
+      const tbody = document.querySelector('#storageProductsTable tbody');
+      tbody.innerHTML = products.slice(0, 10).map(p => `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.name}</td>
+          <td>KSh ${p.currentPrice}</td>
+          <td>${p.category}</td>
+          <td>${p.stock > 0 ? '✅ Yes' : '❌ No'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Initialize on load
+    window.addEventListener('load', async () => {
+      console.log('Debug panel loaded');
+      console.log('Initializing backend integration...');
+      await initBackendIntegration();
+      updateStatus();
+      showStorage();
+    });
+  </script>
+</body>
+</html>

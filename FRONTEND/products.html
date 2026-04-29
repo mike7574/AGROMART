@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products — AgroMart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="products">
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="logo"><span class="emoji" aria-hidden="true">🌾</span> <span data-site-brand>AgroMart</span></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="products.html" aria-current="page">Products</a>
+        <a href="products.html">Deals</a>
+      </nav>
+      <div class="search-bar" role="search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" placeholder="Search products…" data-global-search />
+      </div>
+      <div class="nav-actions">
+        <a href="wishlist.html" class="btn btn-ghost btn-icon hide-mobile">Wishlist <span class="pill"><span data-wishlist-count>0</span></span></a>
+        <a href="cart.html" class="btn btn-ghost btn-icon cart-badge">Cart <span class="badge"><span data-cart-count>0</span></span></a>
+        <a href="account.html" class="btn btn-ghost btn-icon hide-mobile">Account</a>
+        <button type="button" class="btn btn-ghost btn-icon mobile-toggle" data-mobile-menu-toggle aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu">
+      <div class="search-bar-mobile"><input type="search" placeholder="Search products…" data-global-search-mobile /></div>
+      <nav><a href="index.html">Home</a><a href="products.html">Products</a><a href="wishlist.html">Wishlist</a><a href="cart.html">Cart</a><a href="account.html">Account</a></nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:2rem;padding-bottom:2rem;min-height:80vh;">
+    <h1 class="page-title">Products</h1>
+    <div class="filters-bar">
+      <div class="search-input">
+        <input type="search" placeholder="Search products…" />
+      </div>
+      <select aria-label="Sort">
+        <option value="popularity">Popularity</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="rating">Rating</option>
+      </select>
+    </div>
+    <div class="listing-layout">
+      <aside class="sidebar-filters">
+        <h3>Category</h3>
+        <button type="button" class="filter-btn active" data-category="All">All</button>
+        <button type="button" class="filter-btn" data-category="Livestock">Livestock</button>
+        <button type="button" class="filter-btn" data-category="Seeds & Seedlings">Seeds & Seedlings</button>
+        <button type="button" class="filter-btn" data-category="Fertilizers">Fertilizers</button>
+        <button type="button" class="filter-btn" data-category="Pesticides & Herbicides">Pesticides & Herbicides</button>
+        <button type="button" class="filter-btn" data-category="Animal Feed">Animal Feed</button>
+        <button type="button" class="filter-btn" data-category="Tools & Equipment">Tools & Equipment</button>
+      </aside>
+      <div class="listing-content">
+        <p class="results-count"></p>
+        <div class="products-grid" id="catalogGrid"></div>
+        <div class="empty-state" hidden>No products match your filters.</div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand"><a href="index.html" class="logo"><span class="emoji">🌾</span> <span data-site-brand>AgroMart</span></a><p class="muted">Prototype · local data only</p><p class="muted">Support: <span data-support-phone></span></p></div>
+      <div class="footer-col"><h4>Shop</h4><ul><li><a href="cart.html">Cart</a></li><li><a href="wishlist.html">Wishlist</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
+      <div class="footer-col"><h4>Admin</h4><ul><li><a href="admin.html">Admin</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">© <span data-year></span> <span data-site-brand>AgroMart</span></div>
+  </footer>
+  <script type="module" src="js/storefront-entry.js"></script>
+  <script>document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });</script>
+</body>
+</html>

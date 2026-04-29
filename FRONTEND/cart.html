@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — AgroMart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="cart">
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="logo"><span class="emoji">🌾</span> <span data-site-brand>AgroMart</span></a>
+      <nav class="nav-links"><a href="index.html">Home</a><a href="products.html">Products</a></nav>
+      <div class="search-bar"><input type="search" placeholder="Search…" data-global-search /></div>
+      <div class="nav-actions">
+        <a href="wishlist.html" class="btn btn-ghost btn-icon hide-mobile">Wishlist <span class="pill"><span data-wishlist-count>0</span></span></a>
+        <a href="cart.html" class="btn btn-ghost btn-icon cart-badge" aria-current="page">Cart <span class="badge"><span data-cart-count>0</span></span></a>
+        <a href="account.html" class="btn btn-ghost btn-icon hide-mobile">Account</a>
+        <button type="button" class="btn btn-ghost btn-icon mobile-toggle" data-mobile-menu-toggle aria-controls="mobileMenu">Menu</button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu"><nav><a href="index.html">Home</a><a href="products.html">Products</a><a href="wishlist.html">Wishlist</a><a href="cart.html">Cart</a></nav></div>
+  </header>
+  <main class="container" style="padding-top:2rem;padding-bottom:2rem;min-height:80vh;">
+    <h1 class="page-title">Shopping cart</h1>
+    <div class="cart-layout">
+      <div id="cartItemsList"></div>
+      <div class="order-summary">
+        <h2>Order summary</h2>
+        <div class="summary-row"><span class="label">Subtotal</span><span id="cartSubtotal">KSh 0</span></div>
+        <div class="summary-row"><span class="label">Shipping (est.)</span><span id="cartShipping">KSh 0</span></div>
+        <div class="summary-total">
+          <div class="summary-row"><span>Total</span><span class="value" id="cartTotal">KSh 0</span></div>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg" id="goCheckout" style="width:100%;margin-top:1rem;">Proceed to checkout</button>
+        <a href="products.html" class="btn btn-link" style="width:100%;margin-top:0.5rem;display:block;text-align:center;">Continue shopping</a>
+      </div>
+    </div>
+  </main>
+  <footer class="footer"><div class="container footer-bottom">© <span data-year></span> <span data-site-brand>AgroMart</span></div></footer>
+  <script type="module" src="js/storefront-entry.js"></script>
+  <script>document.querySelector('[data-year]') && (document.querySelector('[data-year]').textContent = String(new Date().getFullYear()));</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AgroMart — agricultural marketplace prototype." />
+  <title>AgroMart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="home">
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="logo"><span class="emoji" aria-hidden="true">🌾</span> <span data-site-brand>AgroMart</span></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="products.html">Products</a>
+        <a href="products.html">Deals</a>
+      </nav>
+      <div class="search-bar" role="search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" placeholder="Search products…" data-global-search />
+      </div>
+      <div class="nav-actions">
+        <a href="wishlist.html" class="btn btn-ghost btn-icon hide-mobile">Wishlist <span class="pill"><span data-wishlist-count>0</span></span></a>
+        <a href="cart.html" class="btn btn-ghost btn-icon cart-badge">Cart <span class="badge"><span data-cart-count>0</span></span></a>
+        <a href="account.html" class="btn btn-ghost btn-icon hide-mobile">Account</a>
+        <button type="button" class="btn btn-ghost btn-icon mobile-toggle" data-mobile-menu-toggle aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu">
+      <div class="search-bar-mobile">
+        <input type="search" placeholder="Search products…" data-global-search-mobile />
+      </div>
+      <nav aria-label="Mobile">
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="wishlist.html">Wishlist <span class="pill"><span data-wishlist-count>0</span></span></a>
+        <a href="cart.html">Cart <span class="badge"><span data-cart-count>0</span></span></a>
+        <a href="account.html">Account</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero hero-slideshow" id="heroRoot" aria-label="Featured">
+    <div class="hero-slides">
+      <div class="hero-slide is-active" data-hero-slide="0"><img src="" alt="" decoding="async" fetchpriority="high" /></div>
+      <div class="hero-slide" data-hero-slide="1"><img src="" alt="" decoding="async" /></div>
+      <div class="hero-slide" data-hero-slide="2"><img src="" alt="" decoding="async" /></div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+      <div class="hero-text">
+        
+        <h1 data-hero-headline>Everything your farm needs</h1>
+        <p data-hero-subcopy>Quality inputs and tools for Kenyan growers.</p>
+        <div class="hero-actions">
+          <a href="products.html" class="btn btn-secondary btn-lg" data-hero-cta>Shop now</a>
+          <a href="products.html" class="btn btn-hero-outline btn-lg">Browse catalog</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-dots" role="tablist" aria-label="Hero slides">
+      <button type="button" class="hero-dot is-active" data-hero-dot="0" aria-selected="true" aria-label="Slide 1"></button>
+      <button type="button" class="hero-dot" data-hero-dot="1" aria-selected="false" aria-label="Slide 2"></button>
+      <button type="button" class="hero-dot" data-hero-dot="2" aria-selected="false" aria-label="Slide 3"></button>
+    </div>
+  </section>
+
+ 
+
+  <section class="section">
+    <div class="container">
+      <h2 class="center-title">Shop by category</h2>
+      <div class="category-grid">
+        <a href="products.html?category=Livestock" class="category-card"><div class="category-img"><span class="cat-emoji" aria-hidden="true">🐄</span></div><span>Livestock</span></a>
+        <a href="products.html?category=Seeds%20%26%20Seedlings" class="category-card"><div class="category-img"><span class="cat-emoji" aria-hidden="true">🌱</span></div><span>Seeds &amp; Seedlings</span></a>
+        <a href="products.html?category=Fertilizers" class="category-card"><div class="category-img"><span class="cat-emoji" aria-hidden="true">🧪</span></div><span>Fertilizers</span></a>
+        <a href="products.html?category=Pesticides%20%26%20Herbicides" class="category-card"><div class="category-img"><span class="cat-emoji" aria-hidden="true">🧴</span></div><span>Pesticides &amp; Herbicides</span></a>
+        <a href="products.html?category=Animal%20Feed" class="category-card"><div class="category-img"><span class="cat-emoji" aria-hidden="true">🐓</span></div><span>Animal Feed</span></a>
+        <a href="products.html?category=Tools%20%26%20Equipment" class="category-card"><div class="category-img"><span class="cat-emoji" aria-hidden="true">🔧</span></div><span>Tools &amp; Equipment</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Best sellers</h2>
+        <a href="products.html" class="btn btn-link">View all</a>
+      </div>
+      <div class="products-grid" id="bestSellersGrid"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>New arrivals</h2>
+        <a href="products.html" class="btn btn-link">View all</a>
+      </div>
+      <div class="products-grid" id="newArrivalsGrid"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo"><span class="emoji" aria-hidden="true">🌾</span> <span data-site-brand>AgroMart</span></a>
+        <p>Prototype storefront. Catalog and settings sync from the admin panel via your browser’s local storage.</p>
+        <p class="muted">Support: <span data-support-phone>+254 700 000 000</span></p>
+        <div class="social-links"><a href="#">Facebook</a><a href="#">Instagram</a><a href="#">WhatsApp</a></div>
+      </div>
+      <div class="footer-col"><h4>Policies</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
+      <div class="footer-col"><h4>Shop</h4><ul><li><a href="products.html">Products</a></li><li><a href="cart.html">Cart</a></li><li><a href="account.html">Account</a></li></ul></div>
+      <div class="footer-col"><h4>Admin</h4><ul><li><a href="admin.html">Open admin</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">© <span data-year></span> <span data-site-brand>AgroMart</span></div>
+  </footer>
+
+  <script type="module" src="js/storefront-entry.js"></script>
+  <script>
+    document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
+  </script>
+</body>
+</html>

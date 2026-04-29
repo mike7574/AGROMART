@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — AgroMart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="checkout">
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="logo"><span class="emoji">🌾</span> <span data-site-brand>AgroMart</span></a>
+      <nav class="nav-links"><a href="cart.html">Back to cart</a></nav>
+      <div class="nav-actions">
+        <a href="cart.html" class="btn btn-ghost btn-icon cart-badge">Cart <span class="badge"><span data-cart-count>0</span></span></a>
+      </div>
+    </div>
+  </header>
+  <main class="container" style="padding-top:2rem;padding-bottom:3rem;min-height:80vh;">
+    <h1 class="page-title">Checkout</h1>
+    <p class="muted" style="margin-bottom:1.5rem;">Prototype checkout — no real M-Pesa payment.</p>
+    <div id="checkoutErrors" class="form-errors" hidden></div>
+    <div id="checkoutSuccess" class="acct-card" hidden></div>
+    <form id="checkoutForm" class="checkout-grid">
+      <div class="form-stack field">
+        <label for="fullName">Full name</label>
+        <input id="fullName" name="fullName" autocomplete="name" required />
+      </div>
+      <div class="form-stack field">
+        <label for="mobile">Mobile number (Kenya)</label>
+        <input id="mobile" name="mobile" inputmode="numeric" autocomplete="tel" required placeholder="e.g. 0712345678 or 254712345678" />
+      </div>
+      <div class="form-stack field">
+        <label for="county">County</label>
+        <select id="county" name="county" required>
+          <option value="">Select county</option>
+          <option>Nairobi</option><option>Mombasa</option><option>Kiambu</option><option>Nakuru</option><option>Kisumu</option><option>Uasin Gishu</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-stack field">
+        <label for="addressLine">Address / landmark</label>
+        <textarea id="addressLine" name="addressLine" rows="3" required placeholder="Road, estate, nearest landmark…"></textarea>
+      </div>
+      <div class="form-stack field">
+        <label for="notes">Order notes (optional)</label>
+        <textarea id="notes" name="notes" rows="2"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">Place order</button>
+    </form>
+  </main>
+  <script type="module" src="js/storefront-entry.js"></script>
+</body>
+</html>

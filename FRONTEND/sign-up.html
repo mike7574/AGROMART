@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign up — AgroMart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="sign-up">
+  <main class="container" style="max-width:24rem;padding-top:3rem;padding-bottom:3rem;">
+    <h1 class="page-title">Create account</h1>
+    <p class="muted">Create a new account to save your cart and orders.</p>
+    <div class="acct-card" style="margin-top:1rem;">
+      <form id="signUpForm" class="form-stack">
+        <div class="field">
+          <label for="su-fullname">Full Name</label>
+          <input id="su-fullname" name="fullName" type="text" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="su-email">Email</label>
+          <input id="su-email" name="email" type="email" autocomplete="username" required />
+        </div>
+        <div class="field">
+          <label for="su-pass">Password</label>
+          <input id="su-pass" name="password" type="password" autocomplete="new-password" required />
+        </div>
+        <div class="field">
+          <label for="su-confirm">Confirm Password</label>
+          <input id="su-confirm" name="confirmPassword" type="password" autocomplete="new-password" required />
+        </div>
+        <p id="signUpError" class="muted" style="color:var(--destructive);min-height:1.25rem;"></p>
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Create Account</button>
+      </form>
+      <p style="margin-top:1rem;font-size:0.875rem;"><a href="sign-in.html">Already have an account? Sign in</a> · <a href="index.html">Home</a></p>
+    </div>
+  </main>
+  <script type="module" src="js/storefront-entry.js"></script>
+</body>
+</html>

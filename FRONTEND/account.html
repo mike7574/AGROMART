@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account — AgroMart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="account">
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="logo"><span class="emoji">🌾</span> <span data-site-brand>AgroMart</span></a>
+      <nav class="nav-links"><a href="products.html">Products</a></nav>
+      <div class="nav-actions">
+        <a href="wishlist.html" class="btn btn-ghost btn-icon hide-mobile">Wishlist <span class="pill"><span data-wishlist-count>0</span></span></a>
+        <a href="cart.html" class="btn btn-ghost btn-icon cart-badge">Cart <span class="badge"><span data-cart-count>0</span></span></a>
+      </div>
+    </div>
+  </header>
+  <main class="container" style="padding-top:2rem;padding-bottom:2rem;min-height:80vh;">
+    <h1 class="page-title">Account</h1>
+    <div id="accountGuest" class="acct-card">
+      <p>You're not signed in.</p>
+      <div style="margin-top:1rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
+        <a class="btn btn-primary btn-sm" href="sign-in.html">Sign in</a>
+        <a class="btn btn-outline btn-sm" href="sign-up.html">Create account</a>
+      </div>
+    </div>
+    <div id="accountApp" class="acct-card" hidden>
+      <h2 style="margin-bottom:0.5rem;">Profile</h2>
+      <p><strong id="acctName"></strong></p>
+      <p class="muted" id="acctEmail"></p>
+      <div style="margin-top:1rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
+        <a href="wishlist.html" class="btn btn-outline btn-sm">Wishlist</a>
+        <button type="button" class="btn btn-danger btn-sm" id="acctSignout">Sign out</button>
+      </div>
+      <h2 style="margin-top:2rem;margin-bottom:0.75rem;">Your orders</h2>
+      <div id="accountOrders"></div>
+    </div>
+  </main>
+  <script type="module" src="js/storefront-entry.js"></script>
+</body>
+</html>

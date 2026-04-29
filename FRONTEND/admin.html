@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgroMart Admin</title>
+  <link rel="stylesheet" href="admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h1>🌾 <span data-site-brand>AgroMart</span></h1>
+    <span>Admin </span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a href="#" class="nav-item active" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+    <a href="#" class="nav-item" data-section="products"><span class="nav-icon">📦</span> Products</a>
+    <a href="#" class="nav-item" data-section="orders"><span class="nav-icon">🛒</span> Orders</a>
+    <div class="nav-section">System</div>
+    <a href="#" class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+    <div class="nav-section">Storefront</div>
+    <a href="index.html" class="nav-item" target="_blank" rel="noopener"><span class="nav-icon">🏪</span> Open storefront</a>
+    <a href="products.html" class="nav-item" target="_blank" rel="noopener"><span class="nav-icon">📋</span> Product listing</a>
+  </nav>
+</aside>
+
+<div class="main-content">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button type="button" id="menu-toggle" class="menu-toggle">☰</button>
+      <h2 id="page-title">Dashboard Overview</h2>
+    </div>
+    <div class="topbar-right">
+      <a class="btn btn-outline btn-sm" href="index.html" target="_blank" rel="noopener">View storefront</a>
+    </div>
+  </header>
+
+  <div class="content">
+    <div id="section-dashboard" class="page-section active">
+      <div id="low-stock-alerts"></div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header"><span class="stat-label">Checkout revenue (local)</span><div class="stat-icon" style="background:var(--accent);color:var(--accent-fg)">💰</div></div>
+          <div class="stat-value" data-dash-stat="revenue">KSh 0</div>
+          <div class="stat-change muted">From saved orders in this browser</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><span class="stat-label">Orders</span><div class="stat-icon" style="background:hsl(35,60%,92%);color:var(--secondary)">📦</div></div>
+          <div class="stat-value" data-dash-stat="orders">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><span class="stat-label">Products</span><div class="stat-icon" style="background:var(--accent);color:var(--accent-fg)">🌱</div></div>
+          <div class="stat-value" data-dash-stat="products">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><span class="stat-label">Low / out of stock</span><div class="stat-icon" style="background:hsl(0,72%,92%);color:var(--destructive)">⚠️</div></div>
+          <div class="stat-value" data-dash-stat="low">0</div>
+        </div>
+      </div>
+      <div class="charts-grid">
+        <div class="card"><div class="card-header"><h3>Demo chart (KSh)</h3><p>Illustrative only</p></div><div class="card-body"><div class="chart-container"><canvas id="salesChart"></canvas></div></div></div>
+        <div class="card"><div class="card-header"><h3>Categories (demo)</h3></div><div class="card-body"><div class="chart-container"><canvas id="categoryChart"></canvas></div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>Recent orders</h3></div>
+        <div class="card-body">
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody id="recent-orders-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-products" class="page-section">
+      <div class="section-header">
+        <h3>Products</h3>
+        <button type="button" class="btn btn-primary" id="adminAddProduct">+ Add product</button>
+      </div>
+      <div class="card"><div class="card-body" style="padding-top:1.25rem">
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Visibility</th><th>Actions</th></tr></thead>
+            <tbody id="products-tbody"></tbody>
+          </table>
+        </div>
+      </div></div>
+    </div>
+
+    <div id="section-orders" class="page-section">
+      <div class="section-header"><h3>Orders (checkout)</h3></div>
+      <div class="card"><div class="card-body" style="padding-top:1.25rem">
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Lines</th><th>Total</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <tbody id="orders-tbody"></tbody>
+          </table>
+        </div>
+      </div></div>
+    </div>
+
+    <div id="section-settings" class="page-section">
+      <div class="card">
+        <div class="card-header"><h3>Store settings</h3><p>Persisted in localStorage — storefront reads on load.</p></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group"><label>Store name</label><input type="text" id="st-name" class="form-control" /></div>
+            <div class="form-group"><label>Support phone</label><input type="text" id="st-phone" class="form-control" /></div>
+          </div>
+          <div class="form-group"><label>Hero headline</label><input type="text" id="st-headline" class="form-control" /></div>
+          <div class="form-group"><label>Hero subcopy</label><textarea id="st-sub" class="form-control" rows="2"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>Hero CTA label</label><input type="text" id="st-cta" class="form-control" /></div>
+            <div class="form-group"><label>Hero CTA link (href)</label><input type="text" id="st-cta-href" class="form-control" /></div>
+          </div>
+          <div class="form-group"><label><input type="checkbox" id="st-ratings" /> Show rating stars on cards</label></div>
+          <button type="button" class="btn btn-primary" id="save-settings">Save settings</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1.25rem">
+        <div class="card-header"><h3>Hero images (3 slots)</h3><p>Stored as data URLs for prototype. <!-- TODO: replace with Cloudinary upload + CDN URLs. --></p></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group"><label>Slide 1</label><input type="file" id="hf0" accept="image/*" class="form-control" /></div>
+            <div class="form-group"><label>Slide 2</label><input type="file" id="hf1" accept="image/*" class="form-control" /></div>
+            <div class="form-group"><label>Slide 3</label><input type="file" id="hf2" accept="image/*" class="form-control" /></div>
+          </div>
+          <button type="button" class="btn btn-secondary" id="save-hero">Save hero images</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="product-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="product-modal-title">Add product</h3>
+      <button type="button" class="modal-close" id="product-modal-close" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="product-form" class="form-stack" onsubmit="return false;">
+        <div class="form-group"><label>Name *</label><input type="text" id="pf-name" class="form-control" required /></div>
+        <div class="form-group"><label>Description</label><textarea id="pf-desc" class="form-control" rows="3"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Category *</label>
+            <select id="pf-category" class="form-control" required>
+              <option value="">Select…</option>
+              <option>Seeds &amp; Seedlings</option>
+              <option>Fertilizers</option>
+              <option>Livestock</option>
+              <option>Tools &amp; Equipment</option>
+              <option>Animal Feed</option>
+              <option>Pesticides &amp; Herbicides</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Unit</label><input type="text" id="pf-unit" class="form-control" placeholder="per bag" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Current price (KSh) *</label><input type="number" id="pf-current" class="form-control" min="0" step="1" required /></div>
+          <div class="form-group"><label>Compare-at price (KSh)</label><input type="number" id="pf-original" class="form-control" min="0" step="1" placeholder="optional" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>SKU</label><input type="text" id="pf-sku" class="form-control" /></div>
+          <div class="form-group"><label>Stock</label><input type="number" id="pf-stock" class="form-control" min="0" step="1" placeholder="optional" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Badge</label><input type="text" id="pf-badge" class="form-control" placeholder="New, Sale…" /></div>
+          <div class="form-group"><label>Discount label</label><input type="text" id="pf-discount" class="form-control" placeholder="-10%" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Rating</label><input type="number" id="pf-rating" class="form-control" min="0" max="5" step="0.1" value="4.5" /></div>
+          <div class="form-group"><label>Reviews count</label><input type="number" id="pf-reviews" class="form-control" min="0" step="1" value="0" /></div>
+        </div>
+        <div class="form-group"><label><input type="checkbox" id="pf-active" checked /> Active (visible on storefront)</label></div>
+        <div class="form-group"><label>Images (local files)</label><input type="file" id="pf-images" class="form-control" accept="image/*" multiple /><p class="muted" style="font-size:.75rem;margin-top:.35rem">Prototype uses FileReader → data URLs. <!-- TODO: replace with Cloudinary upload. --></p></div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" id="product-cancel">Cancel</button>
+      <button type="button" class="btn btn-primary" id="product-save">Save</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/admin-app.js"></script>
+</body>
+</html>
