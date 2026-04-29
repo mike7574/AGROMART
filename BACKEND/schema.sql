@@ -1,0 +1,209 @@
+CREATE TABLE users (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  email VARCHAR(255) NOT NULL,
+  password_hash VARCHAR(255) NULL,
+  full_name VARCHAR(255) NOT NULL,
+  phone_number VARCHAR(20) NULL,
+  is_demo TINYINT(1) NOT NULL DEFAULT 0,
+  role ENUM('CUSTOMER') NOT NULL DEFAULT 'CUSTOMER',
+  last_login_at DATETIME NULL DEFAULT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE INDEX uq_users_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE admins (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  email VARCHAR(255) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  full_name VARCHAR(255) NOT NULL,
+  role ENUM('SUPER_ADMIN','ADMIN') NOT NULL DEFAULT 'ADMIN',
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  last_login_at DATETIME NULL DEFAULT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE INDEX uq_admins_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE categories (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  sort_order INT UNSIGNED NOT NULL DEFAULT 100,
+  active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE INDEX uq_categories_slug (slug),
+  UNIQUE INDEX uq_categories_name (name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE products (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  category_id BIGINT UNSIGNED NOT NULL,
+  sku VARCHAR(100) NULL,
+  name VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) NOT NULL,
+  short_description VARCHAR(500) NULL,
+  description LONGTEXT NULL,
+  unit VARCHAR(50) NOT NULL DEFAULT 'unit',
+  current_price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  original_price DECIMAL(10,2) NULL DEFAULT NULL,
+  stock INT UNSIGNED NOT NULL DEFAULT 0,
+  is_featured TINYINT(1) NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  sort_order INT UNSIGNED NOT NULL DEFAULT 100,
+  metadata JSON NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE INDEX uq_products_slug (slug),
+  UNIQUE INDEX uq_products_sku (sku),
+  INDEX idx_products_category_id (category_id),
+  CONSTRAINT fk_products_category_id FOREIGN KEY (category_id)
+    REFERENCES categories(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE product_images (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  product_id BIGINT UNSIGNED NOT NULL,
+  image_url VARCHAR(2083) NOT NULL,
+  alt_text VARCHAR(255) NULL,
+  sort_order INT UNSIGNED NOT NULL DEFAULT 0,
+  is_primary TINYINT(1) NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  INDEX idx_product_images_product_id (product_id),
+  INDEX idx_product_images_primary (product_id, is_primary),
+  CONSTRAINT fk_product_images_product_id FOREIGN KEY (product_id)
+    REFERENCES products(id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE cart (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id BIGINT UNSIGNED NOT NULL,
+  product_id BIGINT UNSIGNED NOT NULL,
+  quantity INT UNSIGNED NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE INDEX uq_cart_user_product (user_id, product_id),
+  INDEX idx_cart_user_id (user_id),
+  INDEX idx_cart_product_id (product_id),
+  CONSTRAINT fk_cart_user_id FOREIGN KEY (user_id)
+    REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_cart_product_id FOREIGN KEY (product_id)
+    REFERENCES products(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE wishlist (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id BIGINT UNSIGNED NOT NULL,
+  product_id BIGINT UNSIGNED NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE INDEX uq_wishlist_user_product (user_id, product_id),
+  INDEX idx_wishlist_user_id (user_id),
+  INDEX idx_wishlist_product_id (product_id),
+  CONSTRAINT fk_wishlist_user_id FOREIGN KEY (user_id)
+    REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_wishlist_product_id FOREIGN KEY (product_id)
+    REFERENCES products(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE orders (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id BIGINT UNSIGNED NULL DEFAULT NULL,
+  order_number VARCHAR(100) NOT NULL,
+  customer_name VARCHAR(255) NOT NULL,
+  mobile VARCHAR(20) NOT NULL,
+  email VARCHAR(255) NULL DEFAULT NULL,
+  county VARCHAR(100) NULL DEFAULT NULL,
+  address_line VARCHAR(500) NOT NULL,
+  notes TEXT NULL,
+  subtotal DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  delivery_fee DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  total_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  status ENUM('PENDING','PROCESSING','FULFILLED','CANCELLED','REFUNDED') NOT NULL DEFAULT 'PENDING',
+  payment_status ENUM('PENDING','COMPLETED','FAILED','CANCELLED') NOT NULL DEFAULT 'PENDING',
+  customer_ip VARCHAR(45) NULL DEFAULT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE INDEX uq_orders_order_number (order_number),
+  INDEX idx_orders_user_id (user_id),
+  INDEX idx_orders_status (status),
+  INDEX idx_orders_payment_status (payment_status),
+  CONSTRAINT fk_orders_user_id FOREIGN KEY (user_id)
+    REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE order_items (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  order_id BIGINT UNSIGNED NOT NULL,
+  product_id BIGINT UNSIGNED NULL DEFAULT NULL,
+  product_name VARCHAR(255) NOT NULL,
+  product_sku VARCHAR(100) NULL,
+  unit VARCHAR(50) NOT NULL,
+  quantity INT UNSIGNED NOT NULL DEFAULT 1,
+  unit_price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  line_total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  INDEX idx_order_items_order_id (order_id),
+  INDEX idx_order_items_product_id (product_id),
+  CONSTRAINT fk_order_items_order_id FOREIGN KEY (order_id)
+    REFERENCES orders(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_order_items_product_id FOREIGN KEY (product_id)
+    REFERENCES products(id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE payments (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  payment_id VARCHAR(36) UNIQUE NOT NULL,
+  order_id BIGINT UNSIGNED NOT NULL,
+  user_id BIGINT UNSIGNED NULL DEFAULT NULL,
+  payment_reference VARCHAR(100) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  phone_number VARCHAR(20) NOT NULL,
+  transaction_type ENUM('STK_PUSH','MPESA_CHECKOUT','OTHER') NOT NULL DEFAULT 'STK_PUSH',
+  status ENUM('PENDING','COMPLETED','FAILED','CANCELLED') NOT NULL DEFAULT 'PENDING',
+  merchant_request_id VARCHAR(100) NULL DEFAULT NULL,
+  checkout_request_id VARCHAR(100) NULL DEFAULT NULL,
+  mpesa_transaction_id VARCHAR(100) NULL DEFAULT NULL,
+  mpesa_receipt_number VARCHAR(100) NULL DEFAULT NULL,
+  mpesa_response_code VARCHAR(50) NULL DEFAULT NULL,
+  request_payload JSON NULL,
+  callback_payload JSON NULL,
+  expires_at DATETIME NULL DEFAULT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  INDEX idx_payment_id (payment_id),
+  UNIQUE INDEX uq_payments_payment_reference (payment_reference),
+  UNIQUE INDEX uq_payments_checkout_request_id (checkout_request_id),
+  INDEX idx_payments_order_id (order_id),
+  INDEX idx_payments_user_id (user_id),
+  INDEX idx_payments_merchant_request_id (merchant_request_id),
+  INDEX idx_payments_status (status),
+  CONSTRAINT fk_payments_order_id FOREIGN KEY (order_id)
+    REFERENCES orders(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_payments_user_id FOREIGN KEY (user_id)
+    REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
